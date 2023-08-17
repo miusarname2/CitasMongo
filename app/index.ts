@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import { users } from "../routes/users.routes.js";
 import { appVerify } from "../middlewares/token.js";
+import { doctors } from "../routes/doctors.routes.js";
 import "reflect-metadata";
 import { permisionValidator } from "../middlewares/config/permisions.js";
 
@@ -24,9 +25,9 @@ app.use(cors({ origin: "*" }));
 //Routes
 app.get("/token", appToken);
 app.use("/users", appVerify, permisionValidator, users);
-app.use("/doctors", appVerify,permisionValidator);
-app.use("/quotes", appVerify,permisionValidator);
-app.use("/counsultingRoom", appVerify,permisionValidator);
+app.use("/doctors", appVerify, permisionValidator, doctors)
+app.use("/quotes", appVerify, permisionValidator);
+app.use("/counsultingRoom", appVerify, permisionValidator)
 
 //Server
 app.listen(app.get("port"), () => {
