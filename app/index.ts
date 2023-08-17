@@ -5,6 +5,7 @@ import cors from "cors";
 import { appToken } from "../middlewares/token.js";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import { counsultingRoom } from "../routes/counsultingRoom.routes.js";
 import { users } from "../routes/users.routes.js";
 import { appVerify } from "../middlewares/token.js";
 import { doctors } from "../routes/doctors.routes.js";
@@ -27,7 +28,7 @@ app.get("/token", appToken);
 app.use("/users", appVerify, permisionValidator, users);
 app.use("/doctors", appVerify, permisionValidator, doctors)
 app.use("/quotes", appVerify, permisionValidator);
-app.use("/counsultingRoom", appVerify, permisionValidator)
+app.use("/counsultingRoom", appVerify, permisionValidator,counsultingRoom)
 
 //Server
 app.listen(app.get("port"), () => {
