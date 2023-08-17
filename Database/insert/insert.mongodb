@@ -1,0 +1,54 @@
+use("ejercicio-citas")
+
+db.users.insertOne(
+    {
+        names: {
+            name: "Juan",
+            secondName: "Diego",
+            firstLastName: "Ramirez",
+            secondLastName: "Mogotocoro",
+        },
+        phone: "1099737011",
+        address: 1234,
+        email:"oscarm.alvarez@gmail",
+        genre: {
+            name: "Masculino",
+            abbreviation: "M"
+        },
+        attendant: {
+            name: "Daniela",
+            phone: "400000",
+            address: "alguna direccion"
+        },
+        quotes:  {
+            code: 1,
+            date: "alguna fecha",
+            quotesStatus: 1,
+            doctorId: {
+                "$oid": "64d69f071e3a8eccb3d5b23e"
+              }
+        }
+      }
+)
+
+
+
+db.doctors.insertMany([
+    {
+        nameFull: "Luna Ramirez",
+        consultingRoom: {
+            code: 10,
+            name: "name consultingRoom"
+        },
+        speciality: "Forence"
+    },
+
+    {
+        nameFull: "Emily",
+        consultingRoom: {
+            code: 3,
+            name: "name consultingRoom"
+        },
+        speciality: "psicologa"
+    }
+])

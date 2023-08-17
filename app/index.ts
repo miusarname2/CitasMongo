@@ -5,7 +5,10 @@ import cors from "cors";
 import { appToken } from "../middlewares/token.js";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import { users } from "../routes/users.routes.js";
+import { appVerify } from "../middlewares/token.js";
 import "reflect-metadata";
+import { permisionValidator } from "../middlewares/config/permisions.js";
 
 const app = express();
 
@@ -19,7 +22,11 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 
 //Routes
-app.get('/token/:usuario',appToken)
+app.get("/token", appToken);
+app.use("/users", appVerify, permisionValidator, users);
+app.use("/doctors", appVerify,permisionValidator);
+app.use("/quotes", appVerify,permisionValidator);
+app.use("/counsultingRoom", appVerify,permisionValidator);
 
 //Server
 app.listen(app.get("port"), () => {
