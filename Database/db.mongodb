@@ -1,0 +1,48 @@
+use("ejercicio-citas")
+
+db.createCollection("users", {
+  
+  validator: {
+    $jsonSchema: {
+
+      bsonType: "object",
+      additionalProperties: false,
+      required: ["names", "phone", "address", "email", "genre", "attendant", "quotes"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        names: { bsonType: "object", description: "names is required" },
+        phone: { bsonType: "string", description: "apellido is required" },
+        address: { bsonType: "int", description: "dni is required" },
+        email: { bsonType: "string", description: "direccion is required" },
+        genre: { bsonType: "object", description: "genre is required" },
+        attendant: { bsonType: "object", description: "attendant is required" },
+        quotes: { bsonType: "object", description: "quotes is required" },
+      }
+    }
+  }
+})
+
+db.createCollection("doctors", {
+    validator: {
+      $jsonSchema: {
+
+        bsonType: "object",
+        additionalProperties: false,
+        required: ["nameFull", "consultingRoom", "speciality"],
+        properties: {
+          _id: { bsonType: "objectId" },
+          nameFull: { bsonType: "string", description: "nameFull is required and the type string" },
+          speciality: { bsonType: "string", description: "speciality is required and the type string" },
+          consultingRoom: { 
+                bsonType: "object",
+                description: "consultingRoom is required and the type string",
+                required: ["code", "name"],
+                properties: {
+                    name: { bsonType: "string", description: "name is required and the type string" },
+                    code: { bsonType: "int", description: "code is required and the type integer" },
+                }
+            },
+        }
+      }
+    }
+  })
