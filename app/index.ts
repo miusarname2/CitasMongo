@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
+import { appToken } from "../middlewares/token.js";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import "reflect-metadata";
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 
 //Routes
-
+app.get('/token/:usuario',appToken)
 
 //Server
 app.listen(app.get("port"), () => {

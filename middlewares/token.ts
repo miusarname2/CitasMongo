@@ -1,47 +1,88 @@
-import 'reflect-metadata';
-import {plainToClass, classToPlain } from 'class-transformer';
+import { SignJWT, jwtVerify } from "jose"
+import { con } from "../Database/connection/atlas.js";
+import passport from "passport";
+import { ObjectId } from "mongodb";
+import { Strategy as BearerStrategy } from "passport-http-bearer";
 import dotenv from 'dotenv';
-import {Router} from 'express';
-import { SignJWT, jwtVerify } from 'jose';
+import { Router } from 'express';
 
+dotenv.config({ path: "../" });
 
-
-dotenv.config({path:"../"});
 const appToken = Router();
 const appVerify = Router();
-appToken.use("/:collecion", async(req:any,res)=>{
-    try {
-        let inst =  plainToClass(eval(req.params.collecion), {}, { ignoreDecorators: true })
-        console.log(inst)
-        const encoder = new TextEncoder();
-        const jwtconstructor = new SignJWT(Object.assign({}, classToPlain(inst)));
-        const jwt = await jwtconstructor
-        .setProtectedHeader({alg:"HS256", typ: "JWT"})
-        .setIssuedAt()
-        .setExpirationTime("30m")
-        .sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
-        req.data = jwt;
-        res.status(201).send({status: 201, message: jwt});
-    } catch (error) {
-        res.status(404).send({status: 404, message: "Token solicitado no valido"});
-    }
-})
 
-appVerify.use("/", async(req:any,res,next)=>{
-    const {authorization} = req.headers;
-    if (!authorization) return res.status(400).send({status: 400, token: "Token no enviado"});
+appToken.use(passport.initialize());
+
+const crearToken = async (req, res) => {
+    const conexionDB = await con()
+    const encoder = new TextEncoder();
+
+    let db = await con();
+    let usuario = db.collection("usuarios");
+    let result = await usuario.find({}).toArray();
+
+    // Busca el parámetro ``usuario`` en la colección "usuarios"
+   
+    if (!result) return res.status(404).send('Usuario no encontrado');
+    const id = result._id.toString();
+
+    // Crear el token con el id del documento buscado
+    const jwtConstructor = await new SignJWT({ id: id })
+        .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+        .setIssuedAt()
+        .setExpirationTime('1h')
+        .sign(encoder.encode(process.env.JWT_SECRET));
+    res.send(jwtConstructor);
+}
+
+const validarToken = async (token) => {
+    const conexionDB = await con()
     try {
         const encoder = new TextEncoder();
-        const jwtData = await jwtVerify(
-            authorization,
-            encoder.encode(process.env.JWT_PRIVATE_KEY)
+        const jwtData: any = await jwtVerify(
+            token,
+            encoder.encode(process.env.JWT_SECRET)
         );
-        req.data = jwtData;
-        next();
+
+        // Buscar el id del token en la colección token
+        /*
+        Si el token es válido, se retorna el documento de la colección token
+        Si el token es válido, pero no existe en la colección token, se retorna null
+        Si el token no es válido, se retorna false
+        */
+        return await conexionDB.collection('usuarios').findOne({ _id: new ObjectId(jwtData.payload.id) });
     } catch (error) {
-        res.status(498).send({status: 498, token: "Token caducado"});
+        console.log(error);
+        return false;
     }
-})
+
+}
+
+passport.use(new BearerStrategy(
+    async function (token, done) {
+        const usuario = await validarToken(token)
+        if (!usuario) return done(null, false); // No se encontró el token en la colección token o el token no es válido
+        return done(null, usuario); // El token es válido y se agrega el documento de la colección token a req.user
+    }
+));
+
+const rolesPermitidos = {
+    admin: ['admin', 'users','doctors','quotes'],
+    users: ['doctors','quotes'],
+    doctors:['quotes','users']
+}
+export const validarPermisos = (req, res, next) => {
+    //Comprueba que el usuario este accediendo a la url permitida para su rol
+    if (rolesPermitidos[req.user.rol].includes(req.url.split('/')[2])) {
+      next();
+    } else {
+      res.status(403).send('No tienes permisos para acceder a este recurso');
+    }
+  }
+
+appToken.use(crearToken)
+appVerify.use(validarToken)
+
 
 export {
     appToken,
