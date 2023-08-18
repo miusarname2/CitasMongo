@@ -9,6 +9,7 @@ import { counsultingRoom } from "../routes/counsultingRoom.routes.js";
 import { users } from "../routes/users.routes.js";
 import { appVerify } from "../middlewares/token.js";
 import { doctors } from "../routes/doctors.routes.js";
+import { quotes } from "../routes/quotes.routes.js";
 import "reflect-metadata";
 import { permisionValidator } from "../middlewares/config/permisions.js";
 
@@ -27,7 +28,7 @@ app.use(cors({ origin: "*" }));
 app.get("/token", appToken);
 app.use("/users", appVerify, permisionValidator, users);
 app.use("/doctors", appVerify, permisionValidator, doctors)
-app.use("/quotes", appVerify, permisionValidator);
+app.use("/quotes", appVerify, permisionValidator,quotes);
 app.use("/counsultingRoom", appVerify, permisionValidator,counsultingRoom)
 
 //Server
