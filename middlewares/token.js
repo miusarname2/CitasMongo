@@ -28,7 +28,7 @@ export const validarToken = async (token) => {
   const conexionDB = await con();
   try {
     const encoder = new TextEncoder();
-    const jwtData: any = await jwtVerify(
+    const jwtData = await jwtVerify(
       token,
       encoder.encode(process.env.JWT_SECRET)
     );
@@ -50,4 +50,4 @@ passport.use(
 
 appToken.use(crearToken);
 
-export { appToken, appVerify };
+export { appToken, appVerify,passport };

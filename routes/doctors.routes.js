@@ -3,7 +3,7 @@ import { con } from "../Database/connection/atlas.js";
 
 export const doctors = Router();
 
-doctors.get("/", async (req: any, res) => {
+doctors.get("/", async (req, res) => {
   const db = await con();
   const speciality = (req.query.speciality).toLowerCase();
   const usuario = db.collection("doctors")

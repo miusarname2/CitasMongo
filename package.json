@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "./controller/app/index.js",
+  "main": "./app/index.js",
   "scripts": {
     "dev": "nodemon --quiet index.js",
     "tsc": "tsc -w",
