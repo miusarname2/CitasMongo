@@ -1,17 +1,6 @@
 # CitasMongo
 
-Este es un repositorio de código para un proyecto de citas que utiliza MongoDB como base de datos. El proyecto está escrito en Python y utiliza la biblioteca Flask para crear una aplicación web.
-
-## Características
-
-El proyecto tiene las siguientes características:
-
-- Los usuarios pueden crear perfiles y buscar otros usuarios.
-- Los usuarios pueden enviar mensajes a otros usuarios.
-- Los usuarios pueden ver su historial de chat.
-- Los usuarios pueden marcar a otros usuarios como favoritos.
-- Los usuarios pueden bloquear a otros usuarios.
-
+Este es un repositorio de código para un proyecto de citas que utiliza MongoDB como base de datos. El proyecto está escrito en nodeJS y express
 ## Instalacion
 
 1. primero clona el repositorio
